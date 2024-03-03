@@ -13,10 +13,10 @@ Fraction::Fraction(Object_t a, Object_t b, bool isNegative)
 	b->setParent(this);
 }
 
-void Fraction::visitChild(Visitor_t mv)
+void Fraction::visitChild(Visitor_t v)
 {
-	mv->onVisit(_a);
-	mv->onVisit(_b);
+	v->visit(_a);
+	v->visit(_b);
 }
 
 bool Fraction::childIs(int index, Type type)

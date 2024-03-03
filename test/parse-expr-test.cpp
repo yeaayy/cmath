@@ -94,6 +94,31 @@ TEST(expr, parse_multiplication) {
     EXPECT_EQ(mult->get(1), b);
 }
 
+TEST(expr, parse_triple_multiplication) {
+    stream inp("@*@*@");
+    auto var = std::make_shared<ExpressionMock>();
+    ErrorHandlerMock handler;
+    auto parser = XExpression::create(nullptr, nullptr, var);
+
+    handler.EXPECT_NO_ERROR(parser->getErrorHandler());
+    var->canParseTrue();
+    var->canParseTrue();
+    var->canParseTrue();
+    auto a = var->willParseMock();
+    auto b = var->willParseMock();
+    auto c = var->willParseMock();
+
+    Object_t result;
+    ASSERT_TRUE(parser->parse(inp, result));
+    ASSERT_EQ(result->getType(), Type::MULTIPLICATION);
+
+    auto mult = std::static_pointer_cast<Multiplication>(result);
+    EXPECT_EQ(mult->getChildCount(), 3);
+    EXPECT_EQ(mult->get(0), a);
+    EXPECT_EQ(mult->get(1), b);
+    EXPECT_EQ(mult->get(2), c);
+}
+
 TEST(expr, parse_a_plus_b) {
     stream inp("@+@");
     auto var = std::make_shared<ExpressionMock>();

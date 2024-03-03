@@ -21,10 +21,10 @@ Object_t Derrivative::copy(bool deep)
     return result;
 }
 
-void Derrivative::visitChild(Visitor_t mv)
+void Derrivative::visitChild(Visitor_t v)
 {
-	mv->onVisit(a);
-	mv->onVisit(b);
+	v->visit(a);
+	v->visit(b);
 }
 
 bool Derrivative::childIs(int index, Type type)

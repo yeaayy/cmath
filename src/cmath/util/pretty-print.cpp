@@ -49,29 +49,26 @@ ssize_t write(struct string *dst, const char *buff, size_t c) {
 
 char *PrettyPrint::toString(Object_t obj, int *length)
 {
-	struct string tmp = {0, (char*) malloc(1)};
+	struct string tmp = {
+		.size = 0,
+		.str = (char*) malloc(1),
+	};
+	int len;
 
 #if defined(__ANDROID__)
-    if(length == nullptr) {
-        print(obj, fwopen(&tmp, (int(*)(void*,const char*, int)) write));
-    } else {
-        *length = print(obj, fwopen(&tmp, (int(*)(void*,const char*, int)) write));
-    }
+	len = print(obj, fwopen(&tmp, (int(*)(void*,const char*, int)) write));
 #elif  defined(__linux__)
 	cookie_io_functions_t funcs = {
 		nullptr,
-		(ssize_t(*)(void*,const char*, size_t)) write,
+		(ssize_t(*)(void*, const char*, size_t)) write,
 		nullptr,
 		nullptr,
 	};
-	if(length != nullptr) {
-		*length = print(obj, fopencookie(&tmp, "wb", funcs));
-	} else {
-		print(obj, fopencookie(&tmp, "wb", funcs));
-	}
+	len = print(obj, fopencookie(&tmp, "wb", funcs));
 #else
 #error "Unknown platform"
 #endif
+	if(length) *length = len;
 	fclose(output);
 	output = nullptr;
 	tmp.str[tmp.size] = '\0';
@@ -91,7 +88,7 @@ int PrettyPrint::print(Object_t o)
 		return -1;
 	}
 	index = 0;
-    Visitor::onVisit(o);
+    visit(o);
 	return index;
 }
 
@@ -100,7 +97,7 @@ int PrettyPrint::print(Object_t o, FILE *output)
 	this->output = output;
 	index = 0;
 	lastChar = ' ';
-    Visitor::onVisit(o);
+    visit(o);
 	return index;
 }
 
@@ -113,10 +110,10 @@ void PrettyPrint::wrap(Object_t o, bool wrapNegative = false, bool maskOr = fals
 	if(wrap) {
 		putop("{", false, spaceAroundBracket & spaceAroundOperator);
 		lastChar = ' ';
-        Visitor::onVisit(o);
+        visit(o);
 		putop("}", spaceAroundBracket & spaceAroundOperator, false);
 	} else {
-        Visitor::onVisit(o);
+        visit(o);
 	}
 }
 
@@ -250,7 +247,7 @@ intptr_t PrettyPrint::onVisit(Function_t f)
 			putc(',');
 			putc(' ');
 		}
-        Visitor::onVisit(f->getArgument(i));
+        visit(f->getArgument(i));
 	}
 	putop(")", spaceAroundBracket && spaceAroundOperator, false);
 	BLOCK_END(f)
@@ -270,7 +267,7 @@ intptr_t PrettyPrint::onVisit(Addition_t a)
 		} else {
 			putop(isNegative ? "-" : "+");
 		}
-        Visitor::onVisit(curr);
+        visit(curr);
 		curr->setIsNegative(isNegative);
 	}
 	BLOCK_END(a)
@@ -319,7 +316,7 @@ intptr_t PrettyPrint::onVisit(Bracket_t b)
 	BLOCK_START(b, true)
 	putop("(", spaceAroundBracket && spaceAroundOperator, spaceAroundBracket & spaceAroundOperator);
 	lastChar = ' ';
-    Visitor::onVisit(b->getValue());
+    visit(b->getValue());
 	putop(")", spaceAroundBracket & spaceAroundOperator, spaceAroundBracket && spaceAroundOperator);
 	BLOCK_END(b)
 }
@@ -327,7 +324,7 @@ intptr_t PrettyPrint::onVisit(Bracket_t b)
 intptr_t PrettyPrint::onVisit(Relation_t r)
 {
 	BLOCK_START(r, false)
-    Visitor::onVisit(r->getA());
+    visit(r->getA());
 	switch(r->getRelationType()) {
 		case Relation::Type::EQUAL: putop("="); break;
 		case Relation::Type::LESS_THAN: putop("<"); break;
@@ -336,7 +333,7 @@ intptr_t PrettyPrint::onVisit(Relation_t r)
 		case Relation::Type::LESS_THAN_OR_EQUAL: putop("<="); break;
 		case Relation::Type::GREATER_THAN_OR_EQUAL: putop(">="); break;
 	}
-    Visitor::onVisit(r->getB());
+    visit(r->getB());
 	BLOCK_END(r)
 }
 

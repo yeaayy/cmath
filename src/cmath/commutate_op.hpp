@@ -24,6 +24,10 @@ public:
 	int indexOf(Object_t &obj);
 	void insert(int index, Object_t &o);
 
+	template<typename... Args>
+	void add(Object_t o, Args... args)
+	{ add(o); add(args...); }
+
 protected:
 	const bool absorbSign;
 	std::vector<Object_t > childrens;

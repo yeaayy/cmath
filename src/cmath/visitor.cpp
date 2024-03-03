@@ -62,7 +62,7 @@ intptr_t Visitor::onVisit(Derrivative_t d)
     return 0;
 }
 
-intptr_t Visitor::onVisit(Object_t o)
+intptr_t Visitor::visit(Object_t o)
 {
     switch(o->getType()) {
         case Type::ADDITION: return onVisit(std::static_pointer_cast<Addition>(o));

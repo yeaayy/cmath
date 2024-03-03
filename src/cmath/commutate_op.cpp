@@ -15,10 +15,10 @@ bool CommutateOp::childIs(int index, Type type)
 	return childrens[index]->is(type);
 }
 
-void CommutateOp::visitChild(Visitor_t mv)
+void CommutateOp::visitChild(Visitor_t v)
 {
 	for(auto &child : childrens) {
-		mv->onVisit(child);
+		v->visit(child);
 	}
 }
 
@@ -72,6 +72,7 @@ Object_t &CommutateOp::get(int index)
 
 void CommutateOp::add(Object_t o)
 {
+	if(o == nullptr) return;
 	if(o->is(_type)) {
 		auto obj = std::static_pointer_cast<CommutateOp>(o);
 		for(auto &child : obj->childrens) {

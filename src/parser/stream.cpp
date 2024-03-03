@@ -9,7 +9,7 @@ namespace Parser {
 stream::stream(const char *_buffer)
     : stream(strlen(_buffer), strdup(_buffer))
 {
-    _real = false;
+    _real = true;
 }
 
 stream::stream(std::istream &stream)

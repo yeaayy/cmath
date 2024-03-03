@@ -13,10 +13,10 @@ Power::Power(Object_t base, Object_t exp, bool isNegative)
 	if(exp != nullptr) exp->setParent(this);
 }
 
-void Power::visitChild(Visitor_t mv)
+void Power::visitChild(Visitor_t v)
 {
-	mv->onVisit(_base);
-	mv->onVisit(_exp);
+	v->visit(_base);
+	v->visit(_exp);
 }
 
 bool Power::childIs(int index, Type type)

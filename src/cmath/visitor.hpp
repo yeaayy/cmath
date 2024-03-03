@@ -18,7 +18,7 @@ public:
 	virtual intptr_t onVisit(Bracket_t b);
 	virtual intptr_t onVisit(Relation_t r);
 	virtual intptr_t onVisit(Derrivative_t d);
-	virtual intptr_t onVisit(Object_t o);
+	intptr_t visit(Object_t o);
 };
 
 } // namespace CMath

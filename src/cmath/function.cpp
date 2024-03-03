@@ -22,10 +22,10 @@ Function::~Function()
 {
 }
 
-void Function::visitChild(Visitor_t mv)
+void Function::visitChild(Visitor_t v)
 {
 	for(std::size_t i=0; i<_args.size(); i++) {
-		mv->onVisit(_args[i]);
+		v->visit(_args[i]);
 	}
 }
 

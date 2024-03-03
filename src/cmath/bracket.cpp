@@ -11,9 +11,9 @@ Bracket::Bracket(Object_t value, bool isNegative)
 	if(_value != nullptr) _value->setParent(this);
 }
 
-void Bracket::visitChild(Visitor_t mv)
+void Bracket::visitChild(Visitor_t v)
 {
-	mv->onVisit(_value);
+	v->visit(_value);
 }
 
 Object_t Bracket::copy(bool deep)

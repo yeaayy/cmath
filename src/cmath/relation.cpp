@@ -14,10 +14,10 @@ Relation::Relation(Object_t a, Object_t b, Relation::Type type)
 	b->setParent(this);
 }
 
-void Relation::visitChild(Visitor_t mv)
+void Relation::visitChild(Visitor_t v)
 {
-	mv->onVisit(_a);
-	mv->onVisit(_b);
+	v->visit(_a);
+	v->visit(_b);
 }
 
 Object_t Relation::copy(bool deep)
