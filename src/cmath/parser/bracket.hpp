@@ -28,11 +28,10 @@ protected:
 public:
 	static std::shared_ptr<XBracket> create(
 		PWhitespace_t whitespace = nullptr,
-		PNumber_t number = nullptr,
-		PVariable_t variable = nullptr,
 		PExpression_t expr = nullptr,
 		ErrorHandler_t handler = nullptr);
 	bool canParse(stream &stream) override;
+	void setExpressionParser(PExpression_t);
 
 private:
     std::weak_ptr<PExpression> expr;

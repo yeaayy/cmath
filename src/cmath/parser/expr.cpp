@@ -4,10 +4,14 @@
 
 #include "config.hpp"
 #include "cmath/addition.hpp"
+#include "cmath/bracket.hpp"
+#include "cmath/derrivative.hpp"
 #include "cmath/multiplication.hpp"
+#include "cmath/number.hpp"
 #include "cmath/fraction.hpp"
 #include "cmath/power.hpp"
 #include "cmath/relation.hpp"
+#include "cmath/variable.hpp"
 
 namespace CMath::Parser {
 
@@ -40,7 +44,7 @@ std::shared_ptr<XExpression> XExpression::create(
 	result->whitespace = whitespace ? whitespace : std::make_shared<XWhitespace>(result->getErrorHandler());
 	result->number = number ? number : std::make_shared<XNumber>(result->getErrorHandler());
 	result->variable = variable ? variable : std::make_shared<XVariable>(result->whitespace, result->getErrorHandler());
-	result->bracket = bracket ? bracket : XBracket::create(result->whitespace, result->number, result->variable, result, result->getErrorHandler());
+	result->bracket = bracket ? bracket : XBracket::create(result->whitespace, result, result->getErrorHandler());
 	return result;
 }
 
@@ -74,7 +78,12 @@ Precedence XExpression::getPrecedence(char v)
 bool XExpression::parseOne(stream &stream, Object_t &result)
 {
 	if(variable->canParse(stream)) {
-		return variable->beginParse(stream, result);
+		auto rtn = variable->beginParse(stream, result);
+		if(auto var = std::dynamic_pointer_cast<Variable>(result)) {
+			auto name = var->getName();
+			if(name == "\\df") return parseDerrivative(stream, result);
+		}
+		return rtn;
 	} else if(number->canParse(stream)) {
 		return number->beginParse(stream, result);
 	} else if(bracket->canParse(stream)) {
@@ -170,7 +179,7 @@ loop:
 	if(stream.eof()) {
 		return error(stream, -1, 0, _("Expecting expression after '%c' operator"), op);
 	}
-	// Lower or equal order operator, do recursive
+	// For lower or equal order operator, do recursive
 	if(!beginParse(precedence, stream, second)) {
 		return false;
 	}
@@ -262,6 +271,57 @@ cancel:
 		result = first;
 	}
 	return returnResult;
+}
+
+bool XExpression::parseDerrivative(stream &stream, Object_t &result)
+{
+	int start = stream.tellg();
+	int order = 1;
+	whitespace->parse(stream);
+	if(stream.peek() == '[') {
+		stream.seek();
+		whitespace->parse(stream);
+		int orderOffsetStart = stream.tellg();
+		Object_t orderObj;
+		if(!number->beginParse(stream, orderObj)) {
+			return error(orderOffsetStart, orderOffsetStart + 1, _("Derrivative order must be a number"));
+		}
+		order = std::static_pointer_cast<Number>(orderObj)->getValueSigned();
+		whitespace->parse(stream);
+		if(stream.get() != ']') {
+			return error(stream.tellg(), stream.tellg() + 1, _("Missing ']' after derrivative order"));
+		}
+		stream.seek();
+		whitespace->parse(stream);
+	}
+	Object_t a, b;
+	if(stream.peek() == '-') {
+		return error(stream.tellg(), stream.tellg() + 1, _("Unexpected negative sign, expecting single positive expression here. Wrap the expression with bracket if you still want negative expression."));
+	}
+	if(canParseOne(stream)) {
+		if(!parseOne(stream, a)) {
+			return false;
+		}
+	} else {
+		return error(start, stream.tellg(), _("Expecting expression after derrivative operator"));
+	}
+	whitespace->parse(stream);
+	if(stream.peek() == '-') {
+		return error(stream.tellg(), stream.tellg() + 1, _("Unexpected negative sign, expecting single positive expression here. Wrap the expression with bracket if you still want negative expression."));
+	}
+	if(canParseOne(stream)) {
+		if(!parseOne(stream, b)) {
+			return false;
+		}
+	} else {
+		return error(start, stream.tellg(), _("Expecting other expression after \\df"));
+	}
+	if(b->is(Type::BRACKET)) {
+		Object_t bracket = b;
+		b = std::static_pointer_cast<Bracket>(b)->getValue();
+	}
+	result = std::make_shared<Derrivative>(a, b, order);
+	return true;
 }
 
 std::ostream &operator<<(std::ostream &os, Precedence precedence)

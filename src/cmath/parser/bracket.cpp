@@ -1,5 +1,7 @@
 #include "cmath/parser/bracket.hpp"
 
+#include <iostream>
+
 #include "cmath/bracket.hpp"
 #include "cmath/parser/expr.hpp"
 #include "cmath/parser/whitespace.hpp"
@@ -13,8 +15,6 @@ XBracket::XBracket(ErrorHandler_t handler)
 
 std::shared_ptr<XBracket> XBracket::create(
 	PWhitespace_t whitespace,
-	PNumber_t number,
-	PVariable_t variable,
 	PExpression_t expr,
 	ErrorHandler_t handler
 ) {
@@ -23,10 +23,6 @@ std::shared_ptr<XBracket> XBracket::create(
 	result->whitespace = whitespace ? whitespace : std::make_shared<XWhitespace>(result->getErrorHandler());
 	if(expr) {
 		result->expr = expr;
-	} else {
-		if(!number) number = std::make_shared<XNumber>(result->getErrorHandler());
-		if(!variable) variable = std::make_shared<XVariable>(result->whitespace, result->getErrorHandler());
-		result->expr = XExpression::create(result->whitespace, number, variable, result, result->getErrorHandler());
 	}
 	return result;
 }
@@ -46,6 +42,10 @@ bool XBracket::exec(stream &stream, Object_t &result)
 	whitespace->parse(stream);
     Object_t value;
 	auto expr = this->expr.lock();
+	if(expr == nullptr) {
+		std::cerr << "Internal Error: expr parser is null inside bracket parser.\n";
+		return false;
+	}
 	expr->beginParse(stream, value);
 	if(stream.peek() != pair) {
 		// if(stream.get(-1) == '\n') stream.seek(-1);
@@ -67,6 +67,11 @@ bool XBracket::canParse(stream &stream)
 {
 	int ch = stream.peek();
 	return ch == '(' || ch == '{';
+}
+
+void XBracket::setExpressionParser(PExpression_t expr)
+{
+	this->expr = expr;
 }
 
 } // namespace CMath::Parser

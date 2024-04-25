@@ -34,7 +34,7 @@ TEST(bracket, parse_normal_bracket) {
 
     auto errorHandler = std::make_shared<Parser::ErrorHandler>();
     auto expr = std::make_shared<ExpressionMock>();
-    auto parser = XBracket::create(nullptr, nullptr, nullptr, expr, errorHandler);
+    auto parser = XBracket::create(nullptr, expr, errorHandler);
     ErrorHandlerMock errHandlerMock;
 
     errHandlerMock.EXPECT_NO_ERROR(errorHandler);
@@ -52,7 +52,7 @@ TEST(bracket, parse_curly_bracket) {
 
     auto errorHandler = std::make_shared<Parser::ErrorHandler>();
     auto expr = std::make_shared<ExpressionMock>();
-    auto parser = XBracket::create(nullptr, nullptr, nullptr, expr, errorHandler);
+    auto parser = XBracket::create(nullptr, expr, errorHandler);
     ErrorHandlerMock errHandlerMock;
 
     errHandlerMock.EXPECT_NO_ERROR(errorHandler);
@@ -69,7 +69,7 @@ TEST(bracket, parse_missing_close_normal_bracket) {
     ErrorHandlerMock mockObject;
     auto handler = std::make_shared<Parser::ErrorHandler>();
     auto expr = std::make_shared<ExpressionMock>();
-    auto parser = XBracket::create(nullptr, nullptr, nullptr, expr, handler);
+    auto parser = XBracket::create(nullptr, expr, handler);
 
     mockObject.EXPECT_ERROR(handler, "Missing ')'");
     auto inner = expr->willParseMock();
@@ -83,7 +83,7 @@ TEST(bracket, parse_missing_close_curly_bracket) {
     ErrorHandlerMock mockObject;
     auto handler = std::make_shared<Parser::ErrorHandler>();
     auto expr = std::make_shared<ExpressionMock>();
-    auto parser = XBracket::create(nullptr, nullptr, nullptr, expr, handler);
+    auto parser = XBracket::create(nullptr, expr, handler);
 
     mockObject.EXPECT_ERROR(handler, "Missing '}'");
     auto inner = expr->willParseMock();

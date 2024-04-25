@@ -40,6 +40,7 @@ protected:
 
 	bool parseOne(stream &stream, Object_t &result);
 	bool beginParse(Precedence precedence, stream &stream, Object_t &result);
+	bool parseDerrivative(stream &stream, Object_t &result);
 
 public:
 	static std::shared_ptr<XExpression> create(
