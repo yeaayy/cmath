@@ -291,7 +291,6 @@ bool XExpression::parseDerrivative(stream &stream, Object_t &result)
 		if(stream.get() != ']') {
 			return error(stream.tellg(), stream.tellg() + 1, _("Missing ']' after derrivative order"));
 		}
-		stream.seek();
 		whitespace->parse(stream);
 	}
 	Object_t a, b;

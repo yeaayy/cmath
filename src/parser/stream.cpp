@@ -50,8 +50,10 @@ stream::stream(const stream &src)
 {}
 
 stream::~stream() {
-    if(_real) {
+    if(_real && this->_buffer) {
         free(_buffer);
+        this->_real = false;
+        this->_buffer = nullptr;
     }
 }
 

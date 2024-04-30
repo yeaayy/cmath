@@ -10,6 +10,7 @@ public:
     stream(const char *str);
     stream(std::istream &stream);
     stream(const stream &src);
+	stream(stream&& src) = delete;
     ~stream();
 	int get();
 	void read(void *dst, int len = 1);

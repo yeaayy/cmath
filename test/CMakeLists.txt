@@ -19,6 +19,7 @@ function(generate_test name)
     gtest_discover_tests(${name}-test)
 endfunction()
 
+generate_test(basic)
 generate_test(parse-number)
 generate_test(parse-whitespace)
 generate_test(parse-variable)

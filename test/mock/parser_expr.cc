@@ -7,6 +7,8 @@
 #include "cmath/object.hpp"
 #include "cmath/parser/expr.hpp"
 
+using namespace testing;
+
 class ExpressionMock : public CMath::Parser::PExpression
 {
 	testing::internal::TypedExpectation<bool (::Parser::stream &, CMath::Object_t &)> *__exec = nullptr;
@@ -34,12 +36,24 @@ public:
 		auto value = std::make_shared<ObjectMock>();
 		_exec()->WillOnce(DoAll(
 			WithArgs<0, 1>(Invoke([value] (::Parser::stream &stream, CMath::Object_t &result) {
-				EXPECT_EQ(stream.get(), '@') << "Expecting mock object here";
+				auto readedChar = stream.get();
+				EXPECT_EQ((char) readedChar, '@') << "Expecting mock object here";
 				result = std::static_pointer_cast<CMath::Object>(value);
 			})),
 			Return(true)
 		));
 		return value;
+	}
+
+	//TODO: WIP: need mock object to return the object returned by the parser
+	void willUse(CMath::Parser::PExpression_t parser, CMath::Object_t &copyResult) {
+		_exec()->WillOnce(
+			WithArgs<0, 1>(Invoke([parser, &copyResult] (::Parser::stream &stream, CMath::Object_t &result) -> bool {
+				auto returnResult = parser->beginParse(stream, result);
+				copyResult = result;
+				return returnResult;
+			}))
+		);
 	}
 
 	void canParseTrue() {
