@@ -12,7 +12,7 @@ Number::Number(uint32_t value, bool isNegative)
 
 Object_t Number::copy(bool deep)
 {
-	return std::make_shared<Number>(_isNegative, _value);
+	return std::make_shared<Number>(_value, _isNegative);
 }
 
 void Number::setValue(uint32_t value)

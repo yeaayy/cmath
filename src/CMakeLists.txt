@@ -32,6 +32,7 @@ add_library(cmath_base STATIC
 
     cmath/util/pretty-print.cpp
     cmath/util/tree-print.cpp
+    cmath/util/expand-bracket.cpp
 )
 
 if(TRACE_OBJECT)

@@ -23,6 +23,7 @@ public:
 	intptr_t onVisit(Fraction_t f)  override;
 	intptr_t onVisit(Bracket_t b) override;
 	intptr_t onVisit(Derrivative_t d) override;
+	intptr_t onVisitUnknown(Object_t d);
 
 private:
 	void begin(Object_t, const char*, bool);

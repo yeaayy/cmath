@@ -17,8 +17,9 @@ bool CommutateOp::childIs(int index, Type type)
 
 void CommutateOp::visitChild(Visitor_t v)
 {
-	for(auto &child : childrens) {
-		v->visit(child);
+	// Do not use iterator, child node might change during visit
+	for(size_t i = 0; i < childrens.size(); i++) {
+		v->visit(childrens[i]);
 	}
 }
 
@@ -46,11 +47,13 @@ bool CommutateOp::replace(Object_t old, Object_t _new, Sign sign)
 		return Operator::replace(old, _new, sign);
 	}
 	auto child = std::static_pointer_cast<CommutateOp>(_new);
+	child->aborbSignFrom(old);
 	remove(index);
 	for(int i = child->childrens.size() - 1; i >= 0; i--) {
+		if(!absorbSign) child->childrens[i]->toggleIsNegative(child->isNegative());
 		insert(index, child->childrens[i]);
 	}
-	// if(keepSign) toggleIsNegative(child->isNegative());
+	child->setIsNegative(false);
 	return true;
 }
 
@@ -63,6 +66,11 @@ bool CommutateOp::remove(int index)
 {
     childrens.erase(childrens.begin() + index);
 	return true;
+}
+
+void CommutateOp::clearChild()
+{
+	childrens.clear();
 }
 
 Object_t &CommutateOp::get(int index)
@@ -78,7 +86,6 @@ void CommutateOp::add(Object_t o)
 		for(auto &child : obj->childrens) {
 			childrens.push_back(child);
 			child->setParent(this);
-			// if(absorbSign) child->transferSign(this);
 			if(absorbSign) this->aborbSignFrom(child);
 		}
 		if(absorbSign) this->aborbSignFrom(o);
@@ -89,8 +96,9 @@ void CommutateOp::add(Object_t o)
 	}
 }
 
-void CommutateOp::insert(int index, Object_t &o)
+void CommutateOp::insert(size_t index, Object_t &o)
 {
+	__glibcxx_assert(index <= getChildCount());
 	if(o->is(_type)) {
 		auto obj = std::static_pointer_cast<CommutateOp>(o);
 		auto target = childrens.begin() + index;

@@ -66,9 +66,13 @@ public:
 	void setIsNegative(bool isNegative);
 	bool isNegative();
 	void toggleIsNegative(bool toggle = true);
+	// Take sign from src and make src positive
 	void takeSignFrom(Object_t src);
+	// Toggle this object sign and make src positive
 	void aborbSignFrom(Object_t src);
+	// Copy sign from src, keeping src sign
 	void copySignFrom(Object_t src);
+	// Swap the sign with o
 	void swapSignWith(Object_t o);
 
 	Operator* getParent();

@@ -62,6 +62,11 @@ intptr_t Visitor::onVisit(Derrivative_t d)
     return 0;
 }
 
+intptr_t Visitor::onVisitUnknown(Object_t d)
+{
+    return 0;
+}
+
 intptr_t Visitor::visit(Object_t o)
 {
     switch(o->getType()) {
@@ -75,7 +80,7 @@ intptr_t Visitor::visit(Object_t o)
         case Type::VARIABLE: return onVisit(std::static_pointer_cast<Variable>(o));
         case Type::FUNCTION: return onVisit(std::static_pointer_cast<Function>(o));
         case Type::DERRIVATIVE: return onVisit(std::static_pointer_cast<Derrivative>(o));
-        default: throw std::exception();
+        default: return onVisitUnknown(o);
     }
 }
 

@@ -118,4 +118,11 @@ intptr_t TreePrint::onVisit(Derrivative_t d)
 	return 0;
 }
 
+intptr_t TreePrint::onVisitUnknown(Object_t u)
+{
+	begin(u, "Unknown", false);
+	fprintf(dst, "\n");
+    return 0;
+}
+
 } // namespace CMath
