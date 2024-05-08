@@ -1,5 +1,7 @@
 #include "cmath/commutate_op.hpp"
 
+#include <cassert>
+
 #include "cmath/visitor.hpp"
 
 namespace CMath {
@@ -96,9 +98,9 @@ void CommutateOp::add(Object_t o)
 	}
 }
 
-void CommutateOp::insert(size_t index, Object_t &o)
+void CommutateOp::insert(size_t index, Object_t o)
 {
-	__glibcxx_assert(index <= getChildCount());
+	assert(index <= getChildCount());
 	if(o->is(_type)) {
 		auto obj = std::static_pointer_cast<CommutateOp>(o);
 		auto target = childrens.begin() + index;

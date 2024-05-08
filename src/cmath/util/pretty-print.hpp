@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "cmath/comparator.hpp"
 #include "cmath/visitor.hpp"
 
 namespace CMath {
@@ -15,6 +16,7 @@ public:
         int end;
     } Offset;
 
+	PrettyPrint(Comparator *cmp = nullptr);
 	intptr_t onVisit(Number_t n) override;
 	intptr_t onVisit(Variable_t v) override;
 	intptr_t onVisit(Function_t f) override;
@@ -63,6 +65,7 @@ private:
 	bool spaceAroundBracket = false;
 	bool implicitMultiplication = true;
 	Object_t dotNotation = nullptr;
+	Comparator *cmp;
 };
 
 } // namespace CMath

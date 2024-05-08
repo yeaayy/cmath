@@ -22,7 +22,7 @@ public:
 	Object_t &get(int index);
 	void add(Object_t o);
 	int indexOf(Object_t &obj);
-	void insert(size_t index, Object_t &o);
+	void insert(size_t index, Object_t o);
 	void clearChild();
 
 	template<typename... Args>

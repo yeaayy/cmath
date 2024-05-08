@@ -13,19 +13,19 @@ Comparator::Comparator()
 
 intptr_t Comparator::test(Object_t a, Object_t b)
 {
-	intptr_t result = instance->eval(a, b);
+	intptr_t result = eval(a, b);
 	if(!result) return a->isNegative() - b->isNegative();
 	return result;
 }
 
 intptr_t Comparator::testUnsigned(Object_t a, Object_t b)
 {
-	return instance->eval(a, b);
+	return eval(a, b);
 }
 
-Comparator &Comparator::get()
+Comparator *Comparator::getDefault()
 {
-    return *instance;
+    return instance;
 }
 
 intptr_t Comparator::eval1(Number_t a, Number_t b)

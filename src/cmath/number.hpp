@@ -12,6 +12,7 @@ public:
 
 	Object_t copy(bool deep = false) override;
 	void setValue(uint32_t value);
+	void setValueSigned(int value);
 	uint32_t getValue();
 	int getValueSigned();
 

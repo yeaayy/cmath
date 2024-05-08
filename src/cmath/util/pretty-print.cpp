@@ -9,6 +9,14 @@
 
 namespace CMath {
 
+PrettyPrint::PrettyPrint(Comparator *cmp)
+	: cmp(cmp)
+{
+	if(cmp == nullptr) {
+		this->cmp = Comparator::getDefault();
+	}
+}
+
 bool operator==(const PrettyPrint::Offset &a, const PrettyPrint::Offset &b)
 {
 	return a.start == b.start && a.end == b.end;
@@ -342,7 +350,7 @@ intptr_t PrettyPrint::onVisit(Derrivative_t d)
 	// TODO: Add more style
 	BLOCK_START(d, true)
 	if(dotNotation != nullptr) {
-		if(Comparator::test(d->getB(), dotNotation) == 0)
+		if(cmp->test(d->getB(), dotNotation) == 0)
 		{
 			putc('\\');
 			for(int i = 0; i < d->getOrder(); i++) {

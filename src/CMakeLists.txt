@@ -30,6 +30,7 @@ add_library(cmath_base STATIC
     cmath/parser/bracket.cpp
     cmath/parser/expr.cpp
 
+    cmath/util/add-term.cpp
     cmath/util/pretty-print.cpp
     cmath/util/tree-print.cpp
     cmath/util/expand-bracket.cpp

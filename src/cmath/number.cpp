@@ -20,6 +20,12 @@ void Number::setValue(uint32_t value)
 	_value = value;
 }
 
+void Number::setValueSigned(int value)
+{
+	_isNegative = value < 0;
+	_value = _isNegative ? -value : value;
+}
+
 uint32_t Number::getValue()
 {
 	return _value;

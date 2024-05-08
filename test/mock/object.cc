@@ -1,3 +1,5 @@
+#ifndef MOCK_OBJECT_CC
+#define MOCK_OBJECT_CC
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -38,3 +40,5 @@ bool operator==(ObjectMock_t a, CMath::Object_t b)
 	}
 	return false;
 }
+
+#endif /* MOCK_OBJECT_CC */

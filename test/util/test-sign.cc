@@ -24,8 +24,14 @@ void test_sign(
 void test_sign_full(std::vector<CMath::Object_t> inp, std::function<void(std::vector<int> sign)> func, bool printSign = false)
 {
     std::vector<int> sign(inp.size(), 1);
-    bool loop = true;
-    while(loop) {
+    const int n = 1 << (inp.size());
+    for(int j = 0; j < n; j++) {
+        // Change input sign
+        for(size_t i = 0; i < sign.size(); i++) {
+            sign[i] =( (j >> i) & 1) == 1 ? -1 : 1;
+            inp[i]->setIsNegative(sign[i] < 0);
+        }
+
         if(printSign) {
             std::cout << "Test sign";
             for(size_t i = 0; i < inp.size(); i++) {
@@ -36,24 +42,8 @@ void test_sign_full(std::vector<CMath::Object_t> inp, std::function<void(std::ve
             std::cout << '\n';
         }
 
-        // Change input sign
-        for(size_t i = 0; i < inp.size(); i++) {
-            inp[i]->setIsNegative(sign[i] < 0);
-        }
-
         // Call the test function
         func(sign);
-
-        // Move on to the next sign
-        size_t index = 0;
-        do {
-            sign[index] *= -1;
-            index++;
-            if(index >= inp.size()) {
-                loop = false;
-                break;
-            }
-        } while(sign[index - 1] == 1);
     }
 }
 

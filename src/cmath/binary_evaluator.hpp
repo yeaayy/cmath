@@ -74,7 +74,7 @@ public:
 	virtual intptr_t eval0(Derrivative_t a, Relation_t b);
 	virtual intptr_t eval1(Derrivative_t a, Derrivative_t b);
 
-	intptr_t eval(Object_t a, Object_t b);
+	virtual intptr_t eval(Object_t a, Object_t b);
 	intptr_t operator() (Object_t a, Object_t b);
 
 protected:

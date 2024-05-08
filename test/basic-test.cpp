@@ -122,3 +122,19 @@ TEST(basic, replace_addition_sign) {
     test_sign(5, inp, {1, 1, 1, -1, 1}, {1, 1, 1, -1, 1}, func);
     test_sign(5, inp, {1, 1, -1, -1, 1}, {1, 1, 1, 1, -1}, func);
 }
+
+TEST(basic, test_sign_full) {
+    auto a = std::make_shared<ObjectMock>();
+    for(int i = 0; i < 10; i++) {
+        int count = 0;
+        auto func = [&](std::vector<int> sign) {
+            count++;
+        };
+        std::vector<CMath::Object_t> inp;
+        for(int j = 0; j <= i; j++) {
+            inp.push_back(a->copy());
+        }
+        test_sign_full(inp, func);
+        EXPECT_EQ(count, 1 << (i + 1));
+    }
+}

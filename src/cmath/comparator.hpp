@@ -8,11 +8,13 @@ namespace CMath {
 class Comparator : protected BinaryEvaluator
 {
 public:
-	static intptr_t test(Object_t a, Object_t b);
-	static intptr_t testUnsigned(Object_t a, Object_t b);
-    static Comparator &get();
+    static Comparator *getDefault();
+
+	intptr_t test(Object_t a, Object_t b);
+	intptr_t testUnsigned(Object_t a, Object_t b);
 
 protected:
+	Comparator();
 	intptr_t eval1(Number_t a, Number_t b) override;
 	intptr_t eval1(Variable_t a, Variable_t b) override;
 	intptr_t eval1(Addition_t a, Addition_t b) override;
@@ -25,7 +27,6 @@ protected:
 	intptr_t eval1(Derrivative_t a, Derrivative_t b) override;
 
 private:
-	Comparator();
     static Comparator *instance;
 };
 
